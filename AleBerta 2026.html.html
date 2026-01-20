@@ -1,0 +1,2068 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ale Berta Fotografia</title>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet" />
+
+  <style>
+    /* =========================================================
+       01) BASE / RESET / TOKENS
+       ========================================================= */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #1a1a1a;
+      --secondary: #d4af37;
+      --accent: #f8f8f8;
+      --text-dark: #333;
+      --text-light: #777;
+      --border: #e0e0e0;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --shadow-strong: rgba(0, 0, 0, 0.22);
+
+      /* Preloader (fonte única de verdade) */
+      --preloader-ms: 3000ms;
+
+      /* Header sizing */
+      --header-pad-y: 14px;
+      --header-pad-y-scrolled: 8px;
+      --logo-title: 1.65rem;
+      --logo-icon: 1.35rem;
+      --logo-icon-mb: 4px;
+      --logo-sub: 0.85rem;
+      --logo-sub-mt: -2px;
+      --nav-gap: 34px;
+      --nav-font: 0.93rem;
+      --header-min-height: 70px;
+      --header-min-height-scrolled: 62px;
+
+      /* JS atualiza dinamicamente */
+      --header-h: 70px;
+      --hero-top-gap: 18px;
+
+      /* Masonry columns */
+      --cols-imoveis: 4;
+      --cols-eventos: 4;
+      --cols-olhares: 4;
+      --portfolio-gap: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+      background-color: #fff;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* =========================================================
+       02) PRELOADER
+       ========================================================= */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url('imagens/hero-autoral.jpg');
+      background-size: cover;
+      background-position: center;
+      display: grid;
+      place-items: center;
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity .65s cubic-bezier(.2,.8,.2,1),
+        visibility .65s cubic-bezier(.2,.8,.2,1),
+        filter .65s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .preloader.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      filter: blur(6px);
+    }
+
+    .preloader-inner {
+      display: grid;
+      place-items: center;
+      gap: 18px;
+      padding: 28px 26px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 16px 40px var(--shadow-strong);
+      backdrop-filter: blur(10px);
+    }
+
+    .preloader-signature {
+      max-width: min(360px, 70vw);
+      height: auto;
+      opacity: 0;
+      transform: translateY(8px) scale(0.985);
+      animation: sigIn 900ms cubic-bezier(.2,.8,.2,1) forwards;
+      filter: drop-shadow(0 12px 30px rgba(0,0,0,0.45));
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .preloader-sub {
+      color: rgba(255,255,255,0.78);
+      font-size: 0.95rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    .preloader-bar {
+      width: min(320px, 70vw);
+      height: 4px;
+      background: rgba(255,255,255,0.18);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .preloader-bar > span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: var(--secondary);
+      border-radius: 999px;
+      animation: barFill var(--preloader-ms) linear forwards;
+    }
+
+    @keyframes sigIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes barFill { to { width: 100%; } }
+
+    /* =========================================================
+       03) HEADER / NAV
+       ========================================================= */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: var(--header-pad-y) 0;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s ease;
+      min-height: var(--header-min-height);
+      display: flex;
+      align-items: center;
+      box-shadow: none;
+    }
+
+    header.scrolled {
+      padding: var(--header-pad-y-scrolled) 0;
+      min-height: var(--header-min-height-scrolled);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--logo-title);
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      letter-spacing: 1px;
+      user-select: none;
+      line-height: 1.05;
+    }
+
+    .logo i {
+      color: var(--secondary);
+      margin-bottom: var(--logo-icon-mb);
+      font-size: var(--logo-icon);
+      line-height: 1;
+    }
+
+    .logo span {
+      font-size: var(--logo-sub);
+      font-weight: 400;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-top: var(--logo-sub-mt);
+      line-height: 1.1;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: var(--nav-gap);
+      align-items: center;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 500;
+      font-size: var(--nav-font);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.3s;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    nav a:after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0;
+      width: 0; height: 2px;
+      background: var(--secondary);
+      transition: width 0.3s;
+    }
+
+    nav a:hover { color: var(--secondary); }
+    nav a:hover:after { width: 100%; }
+
+    /* =========================================================
+       04) HERO
+       ========================================================= */
+    .hero {
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('imagens/hero-autoral.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      position: relative;
+      isolation: isolate;
+
+      padding-top: calc(var(--header-h) + var(--hero-top-gap));
+      box-sizing: border-box;
+      min-height: calc(100vh - var(--hero-top-gap));
+    }
+
+    .hero:before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(212,175,55,0.10), rgba(0,0,0,0));
+      z-index: -1;
+    }
+
+    .hero-content { max-width: 800px; padding: 0 20px; }
+
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      animation: fadeInUp 1s ease;
+    }
+
+    .hero .subtitle {
+      font-size: 1.3rem;
+      font-weight: 300;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 30px;
+      animation: fadeInUp 1s ease 0.2s;
+      animation-fill-mode: both;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      font-weight: 300;
+      animation: fadeInUp 1s ease 0.2s;
+      animation-fill-mode: both;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 40px;
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      text-decoration: none;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      animation: fadeInUp 1s ease 0.4s;
+      animation-fill-mode: both;
+      cursor: pointer;
+    }
+
+    .btn:hover { background: white; color: var(--primary); }
+
+    .decorative-line {
+      width: 100px;
+      height: 3px;
+      background: var(--secondary);
+      margin: 30px auto;
+    }
+
+    /* =========================================================
+       05) SECTIONS / SCROLL OFFSET / FADE-IN
+       ========================================================= */
+    section { padding: 100px 0; }
+    section { scroll-margin-top: calc(var(--header-h) + 12px); }
+
+    /* Ajuste solicitado: reduzir o "vazio" entre Sobre e Contato */
+    .contact { padding-top: 5px; }
+
+    .fade-in-section {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in-section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* =========================================================
+       06) PORTFOLIO / MASONRY
+       ========================================================= */
+    .portfolio { background: var(--accent); }
+
+    .portfolio-grid { column-gap: var(--portfolio-gap); }
+    #imoveis .portfolio-grid { column-count: var(--cols-imoveis); }
+    #eventos .portfolio-grid { column-count: var(--cols-eventos); }
+    #olhares .portfolio-grid { column-count: var(--cols-olhares); }
+
+    .portfolio-item{
+      break-inside: avoid;
+      margin: 0 0 var(--portfolio-gap);
+      height: auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.04);
+      transform: translateZ(0);
+    }
+
+    .portfolio-item:before{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(to top, rgba(0,0,0,0.35), transparent 55%);
+      opacity:0;
+      transition: opacity .25s ease;
+      pointer-events:none;
+      z-index:1;
+    }
+    .portfolio-item:hover:before{ opacity:1; }
+
+    .portfolio-item img{
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.35s ease, filter 0.35s ease;
+      filter: saturate(1.02) contrast(1.02);
+    }
+
+    .portfolio-item:hover img{
+      transform: scale(1.04);
+      filter: saturate(1.06) contrast(1.05);
+    }
+
+    /* =========================================================
+       07) CABEÇALHO "CAPÍTULO" (PORTFOLIO) + TOQUE
+       ========================================================= */
+    .gallery-head {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto 34px;
+      padding: 18px 0 10px;
+      text-align: center;
+      isolation: isolate;
+    }
+
+    .gallery-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.55);
+      margin-bottom: 10px;
+    }
+
+    .gallery-title-wrap{
+      position: relative;
+      display: inline-block;
+      padding: 8px 18px;
+    }
+
+    .gallery-big-number{
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -58%);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.8rem, 7vw, 5.6rem);
+      color: rgba(0,0,0,0.06);
+      letter-spacing: 0.06em;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+      line-height: 1;
+
+      opacity: 0;
+      filter: blur(1px);
+    }
+
+    .gallery-title-wrap h2{
+      position: relative;
+      z-index: 1;
+      font-size: 3rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .gallery-divider{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .gallery-divider .line{
+      height: 1px;
+      width: min(220px, 32vw);
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.22), transparent);
+
+      transform: scaleX(0.25);
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .gallery-divider .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--secondary);
+
+      box-shadow: 0 0 0 0 rgba(212,175,55,0.0);
+      transform: scale(0.92);
+      opacity: 0;
+    }
+
+    .gallery-subactions{
+      margin-top: 12px;
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .gallery-mini{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.62);
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .gallery-mini i{ color: rgba(0,0,0,0.45); }
+
+    .gallery-toplink{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.60);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color .2s ease, border-color .2s ease;
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .gallery-toplink:hover{
+      color: var(--secondary);
+      border-color: rgba(212,175,55,0.55);
+    }
+
+    .portfolio.is-visible .gallery-big-number{
+      animation: galNumIn 900ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 80ms;
+    }
+
+    .portfolio.is-visible .gallery-divider .line{
+      animation: galLineIn 750ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 140ms;
+    }
+
+    .portfolio.is-visible .gallery-divider .dot{
+      animation: galDotIn 850ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 180ms;
+    }
+
+    .portfolio.is-visible .gallery-mini,
+    .portfolio.is-visible .gallery-toplink{
+      animation: galMetaIn 700ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 240ms;
+    }
+
+    @keyframes galNumIn{
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.985); filter: blur(1px); }
+      to   { opacity: 1; transform: translate(-50%, -62%) scale(1); filter: blur(0px); }
+    }
+
+    @keyframes galLineIn{
+      from { opacity: 0; transform: scaleX(0.25); }
+      to   { opacity: 1; transform: scaleX(1); }
+    }
+
+    @keyframes galDotIn{
+      0%   { opacity: 0; transform: scale(0.92); box-shadow: 0 0 0 0 rgba(212,175,55,0.0); }
+      60%  { opacity: 1; transform: scale(1.02); box-shadow: 0 0 0 10px rgba(212,175,55,0.18); }
+      100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 7px rgba(212,175,55,0.15); }
+    }
+
+    @keyframes galMetaIn{
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .portfolio + .portfolio{
+      padding-top: 70px;
+      position: relative;
+    }
+
+    .portfolio + .portfolio:before{
+      content:"";
+      position:absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(860px, 88vw);
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.14), transparent);
+    }
+
+    .portfolio-actions{
+      display:flex;
+      justify-content:center;
+      margin-top: 22px;
+    }
+
+    .load-more-btn{
+      padding: 12px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.16);
+      background: #fff;
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .load-more-btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(0,0,0,0.28);
+    }
+
+    .load-more-btn:active{ transform: translateY(0); }
+
+    /* =========================================================
+       08) CABEÇALHO PADRONIZADO (Sobre / Contato) - sem números
+       ========================================================= */
+    .section-head {
+      position: relative;
+      max-width: 980px;
+      margin: 0 auto 34px;
+      padding: 18px 0 10px;
+      text-align: center;
+    }
+
+    .section-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.55);
+      margin-bottom: 10px;
+    }
+
+    .section-title-wrap {
+      position: relative;
+      display: inline-block;
+      padding: 8px 18px;
+    }
+
+    .section-title-wrap h2{
+      position: relative;
+      z-index: 1;
+      font-size: 3rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .section-divider{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .section-divider .line{
+      height: 1px;
+      width: min(220px, 32vw);
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.22), transparent);
+
+      transform: scaleX(0.25);
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .section-divider .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--secondary);
+
+      box-shadow: 0 0 0 0 rgba(212,175,55,0.0);
+      transform: scale(0.92);
+      opacity: 0;
+    }
+
+    .section-subactions{
+      margin-top: 12px;
+      display:flex;
+      justify-content:center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-mini{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.62);
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .section-mini i{ color: rgba(0,0,0,0.45); }
+
+    .section-toplink{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.60);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color .2s ease, border-color .2s ease;
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .section-toplink:hover{
+      color: var(--secondary);
+      border-color: rgba(212,175,55,0.55);
+    }
+
+    .fade-in-section.is-visible .section-divider .line{
+      animation: galLineIn 750ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 120ms;
+    }
+    .fade-in-section.is-visible .section-divider .dot{
+      animation: galDotIn 850ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 160ms;
+    }
+    .fade-in-section.is-visible .section-mini,
+    .fade-in-section.is-visible .section-toplink{
+      animation: galMetaIn 700ms cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay: 210ms;
+    }
+
+    /* =========================================================
+       09) ABOUT
+       ========================================================= */
+    .about { background: var(--accent); }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text { padding-right: 40px; }
+
+    .about-text p {
+      margin-bottom: 20px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .signature-wrapper {
+      margin-top: 20px;
+      text-align: right;
+      clear: both;
+    }
+
+    .signature-image {
+      max-width: 280px;
+      height: auto;
+      display: inline-block;
+      border: none;
+    }
+
+    .about-image{
+      position: relative;
+      overflow: visible;
+      width: 100%;
+      height: 450px;
+      perspective: 900px;
+    }
+
+    .collage-container { position: relative; width: 100%; height: 100%; }
+
+    .collage-image {
+      position: absolute;
+      width: 55%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 14px 32px rgba(0,0,0,0.14);
+      border: 8px solid white;
+
+      will-change: transform;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      transition: transform 600ms cubic-bezier(.2,.8,.2,1), filter 450ms ease;
+    }
+
+    .collage-image:hover { transform: scale(1.03) !important; filter: saturate(1.04) contrast(1.03); }
+
+    /* Fotos sem diminuir de tamanho: apenas afastamos um pouco */
+    .collage-image:first-child {
+      top: 0;
+      left: 6%;
+      z-index: 2;
+      transform: rotate(-2deg);
+      animation: aboutFloatA 7.8s ease-in-out infinite;
+    }
+    .collage-image:last-child {
+      bottom: 0;
+      right: 6%;
+      z-index: 1;
+      transform: rotate(3deg);
+      animation: aboutFloatB 9.6s ease-in-out infinite;
+    }
+
+    .about-image::before{
+      content:"";
+      position:absolute;
+      inset: -18px;
+      background: radial-gradient(circle at 35% 30%, rgba(212,175,55,0.10), transparent 55%),
+                  radial-gradient(circle at 70% 70%, rgba(0,0,0,0.08), transparent 58%);
+      filter: blur(10px);
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .collage-container{
+      position: relative;
+      z-index: 1;
+      transform-style: preserve-3d;
+      --px: 0px;
+      --py: 0px;
+    }
+
+    /* Float orgânico — sem translateZ */
+    @keyframes aboutFloatA{
+      0%, 100% { transform: rotate(-2deg) translateY(0); }
+      50%      { transform: rotate(-2.3deg) translateY(-6px); }
+    }
+
+    @keyframes aboutFloatB{
+      0%, 100% { transform: rotate(3deg) translateY(0); }
+      50%      { transform: rotate(3.2deg) translateY(5px); }
+    }
+
+    /* Parallax sem eixo Z */
+    .about-image.is-parallax .collage-image:first-child{
+      transform: rotate(-2deg) translate(calc(var(--px) * 0.55), calc(var(--py) * 0.55));
+    }
+
+    .about-image.is-parallax .collage-image:last-child{
+      transform: rotate(3deg) translate(calc(var(--px) * 0.35), calc(var(--py) * 0.35));
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .collage-image{ animation: none !important; transition: none !important; }
+      .about-image::before{ display:none; }
+    }
+
+    /* =========================================================
+       10) CONTACT
+       ========================================================= */
+    .contact { background: var(--accent); }
+
+    .contact-info {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .contact-info h3 {
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      color: var(--primary);
+    }
+
+    .contact-info p {
+      margin-bottom: 40px;
+      color: var(--text-light);
+      line-height: 1.8;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .contact-icon {
+      color: var(--secondary);
+      font-size: 1.5rem;
+      margin-right: 20px;
+      width: 30px;
+      text-align: center;
+    }
+
+    .contact-details h4 { font-size: 1.1rem; margin-bottom: 5px; }
+    .contact-details p { color: var(--text-light); }
+
+    .email-link {
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .email-link:hover { color: var(--secondary); }
+
+    .email-link:after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--secondary);
+      transition: width 0.3s;
+    }
+
+    .email-link:hover:after { width: 100%; }
+
+    .copy-notification {
+      position: fixed;
+      bottom: 30px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--secondary);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
+
+    .copy-notification.show { opacity: 1; }
+
+    /* =========================================================
+       11) FOOTER
+       ========================================================= */
+    footer {
+      background: var(--primary);
+      color: white;
+      padding: 60px 0 20px;
+      text-align: center;
+    }
+
+    .footer-content { margin-bottom: 40px; }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .footer-logo i { color: var(--secondary); margin-right: 10px; }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .social-links a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border-radius: 50%;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .social-links a:hover { background: var(--secondary); transform: translateY(-5px); }
+
+    .copyright {
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+
+    /* =========================================================
+       12) WHATSAPP FLOATING BUTTON
+       ========================================================= */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      width: 60px; height: 60px;
+      background-color: #25d366;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+      z-index: 1000;
+      transition: transform 0.3s;
+      text-decoration: none;
+    }
+
+    .whatsapp-btn:hover { transform: scale(1.08); }
+
+    /* =========================================================
+       13) MODAL
+       ========================================================= */
+    .modal {
+      display: flex;
+      position: fixed;
+      z-index: 2000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.95);
+      animation: fadeIn 0.3s;
+    }
+
+    .modal[hidden] { display: none !important; }
+
+    .modal-content {
+      position: relative;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2002;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
+    }
+
+    .modal-image-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 20px 100px;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+    }
+
+    .modal-image-container:active { cursor: grabbing; }
+
+    .modal-image {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      transition: transform 0.1s ease;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .modal-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 2002;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    }
+
+    .modal-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+      transform: translateY(-50%);
+      z-index: 2001;
+      pointer-events: none;
+    }
+
+    .modal-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.2rem;
+      pointer-events: all;
+    }
+
+    .modal-btn:hover { background: var(--secondary); transform: scale(1.1); }
+
+    .modal-close {
+      color: white;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--secondary); }
+
+    .modal-counter {
+      color: white;
+      font-size: 1rem;
+    }
+
+    .zoom-slider-container {
+      width: 200px;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 2px;
+      position: relative;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.3s;
+    }
+
+    .zoom-slider-container:hover { opacity: 1; }
+
+    .zoom-slider {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--secondary);
+      border-radius: 2px;
+    }
+
+    .zoom-slider-handle {
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      transform: translateY(-50%);
+      width: 16px; height: 16px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      cursor: grab;
+    }
+
+    .zoom-slider-handle:active { cursor: grabbing; }
+
+    .zoom-controls { display: flex; gap: 15px; margin-top: 10px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* =========================================================
+       14) RESPONSIVO
+       ========================================================= */
+
+    @media (max-width: 1200px){
+      :root{
+        --cols-imoveis: 4;
+        --cols-eventos: 3;
+        --cols-olhares: 3;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .about-content { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 3rem; }
+
+      :root {
+        --header-pad-y: 12px;
+        --header-pad-y-scrolled: 7px;
+        --nav-gap: 22px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root{
+        --cols-imoveis: 3;
+        --cols-eventos: 2;
+        --cols-olhares: 2;
+        --portfolio-gap: 12px;
+
+        --header-min-height: 66px;
+        --header-min-height-scrolled: 58px;
+      }
+
+      nav ul { gap: 18px; }
+      .hero h1 { font-size: 2.5rem; }
+
+      .gallery-title-wrap h2{ font-size: 2.4rem; }
+      .section-title-wrap h2{ font-size: 2.4rem; }
+
+      .signature-wrapper { text-align: center; }
+      .signature-image { max-width: 200px; }
+
+      .modal-btn { width: 40px; height: 40px; font-size: 1rem; }
+      .modal-close { font-size: 30px; }
+      .modal-image-container { padding: 50px 15px 80px; }
+      .zoom-slider-container { width: 150px; }
+
+      .about-image { height: 350px; }
+      .collage-image { width: 55%; }
+      .collage-image:first-child { left: 6%; top: 0; transform: rotate(-1.5deg); }
+      .collage-image:last-child { right: 6%; bottom: 0; transform: rotate(2deg); }
+
+      .preloader-inner { width: min(520px, 92vw); }
+    }
+
+    @media (max-width: 576px) {
+      :root {
+        --header-pad-y: 10px;
+        --header-pad-y-scrolled: 6px;
+        --logo-title: 1.55rem;
+        --logo-icon: 1.3rem;
+        --logo-sub: 0.82rem;
+      }
+
+      .header-container { flex-direction: column; gap: 12px; }
+      nav ul { flex-wrap: wrap; justify-content: center; }
+
+      .hero { height: 80vh; }
+      .hero-content{ padding-left: 18px; padding-right: 18px; }
+
+      .hero h1{
+        font-size: clamp(2.05rem, 7vw, 2.6rem);
+        line-height: 1.05;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .hero .subtitle{
+        font-size: 0.95rem;
+        letter-spacing: 0.26em;
+        margin-bottom: 18px;
+      }
+
+      .decorative-line{ margin: 18px auto; }
+      .hero p{ font-size: 1.05rem; margin-bottom: 22px; }
+
+      .signature-image { max-width: 180px; }
+
+      .modal-btn { width: 35px; height: 35px; font-size: 0.9rem; }
+      .modal-close { font-size: 25px; }
+      .modal-image-container { padding: 40px 10px 70px; }
+      .zoom-slider-container { width: 120px; }
+      .zoom-slider-handle { width: 14px; height: 14px; right: -7px; }
+
+      .about-image { height: 300px; }
+      .collage-image { width: 55%; }
+      .collage-image:first-child { left: 3%; top: 0; transform: rotate(-1deg); }
+      .collage-image:last-child { right: 3%; bottom: 0; transform: rotate(1.5deg); }
+    }
+
+    @media (max-width: 420px){
+      :root{
+        --cols-imoveis: 2;
+        --cols-eventos: 2;
+        --cols-olhares: 2;
+        --portfolio-gap: 12px;
+      }
+      .gallery-title-wrap h2{ font-size: 2.05rem; }
+      .section-title-wrap h2{ font-size: 2.05rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- =========================================================
+       PRELOADER
+       ========================================================= -->
+  <div class="preloader" id="preloader" aria-hidden="false">
+    <div class="preloader-inner">
+      <img class="preloader-signature" src="imagens/assinatura.png" alt="Assinatura Ale Berta" />
+      <div class="preloader-sub">Fotografia</div>
+      <div class="preloader-bar" aria-hidden="true"><span></span></div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       HEADER
+       ========================================================= -->
+  <header id="siteHeader">
+    <div class="container header-container">
+      <a href="#home" class="logo" aria-label="Ale Berta Fotografia - voltar ao início">
+        <i class="fas fa-camera" aria-hidden="true"></i>
+        Ale Berta
+        <span>Fotografia</span>
+      </a>
+      <nav aria-label="Menu principal">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#imoveis">Imóveis</a></li>
+          <li><a href="#eventos">Eventos</a></li>
+          <li><a href="#olhares">Olhares</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- =========================================================
+         HERO
+         ========================================================= -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <h1>Ale Berta</h1>
+        <div class="subtitle">Fotografia</div>
+        <div class="decorative-line"></div>
+        <p>Imóveis • Eventos • Autoral</p>
+        <a href="#imoveis" class="btn">Ver Portfólio</a>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PORTFOLIO: IMÓVEIS
+         ========================================================= -->
+    <section class="portfolio fade-in-section" id="imoveis" data-gallery="imoveis" data-title="Imóveis" data-chapter="01" data-count="25">
+      <div class="container">
+        <div class="gallery-head" aria-label="Galeria Imóveis">
+          <div class="gallery-kicker">Portfólio</div>
+
+          <div class="gallery-title-wrap">
+            <div class="gallery-big-number" aria-hidden="true">01</div>
+            <h2>Imóveis</h2>
+          </div>
+
+          <div class="gallery-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="dot"></span>
+            <span class="line"></span>
+          </div>
+
+          <div class="gallery-subactions">
+            <span class="gallery-mini" title="Fotos visíveis / total">
+              <i class="fa-regular fa-images" aria-hidden="true"></i>
+              <span class="gallery-counter">12/25</span>
+            </span>
+
+            <a class="gallery-toplink" href="#home" title="Voltar ao topo">
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              topo
+            </a>
+          </div>
+        </div>
+
+        <div class="portfolio-grid" data-grid></div>
+
+        <div class="portfolio-actions" data-actions hidden>
+          <button class="load-more-btn" data-loadmore>Ver mais (12/25)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PORTFOLIO: EVENTOS
+         ========================================================= -->
+    <section class="portfolio fade-in-section" id="eventos" data-gallery="eventos" data-title="Eventos" data-chapter="02" data-count="11">
+      <div class="container">
+        <div class="gallery-head" aria-label="Galeria Eventos">
+          <div class="gallery-kicker">Portfólio</div>
+
+          <div class="gallery-title-wrap">
+            <div class="gallery-big-number" aria-hidden="true">02</div>
+            <h2>Eventos</h2>
+          </div>
+
+          <div class="gallery-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="dot"></span>
+            <span class="line"></span>
+          </div>
+
+          <div class="gallery-subactions">
+            <span class="gallery-mini" title="Fotos visíveis / total">
+              <i class="fa-regular fa-images" aria-hidden="true"></i>
+              <span class="gallery-counter">11/11</span>
+            </span>
+
+            <a class="gallery-toplink" href="#home" title="Voltar ao topo">
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              topo
+            </a>
+          </div>
+        </div>
+
+        <div class="portfolio-grid" data-grid></div>
+
+        <div class="portfolio-actions" data-actions hidden>
+          <button class="load-more-btn" data-loadmore></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         PORTFOLIO: OLHARES
+         ========================================================= -->
+    <section class="portfolio fade-in-section" id="olhares" data-gallery="olhares" data-title="Olhares" data-chapter="03" data-count="16">
+      <div class="container">
+        <div class="gallery-head" aria-label="Galeria Olhares">
+          <div class="gallery-kicker">Portfólio</div>
+
+          <div class="gallery-title-wrap">
+            <div class="gallery-big-number" aria-hidden="true">03</div>
+            <h2>Olhares</h2>
+          </div>
+
+          <div class="gallery-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="dot"></span>
+            <span class="line"></span>
+          </div>
+
+          <div class="gallery-subactions">
+            <span class="gallery-mini" title="Fotos visíveis / total">
+              <i class="fa-regular fa-images" aria-hidden="true"></i>
+              <span class="gallery-counter">12/16</span>
+            </span>
+
+            <a class="gallery-toplink" href="#home" title="Voltar ao topo">
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              topo
+            </a>
+          </div>
+        </div>
+
+        <div class="portfolio-grid" data-grid></div>
+
+        <div class="portfolio-actions" data-actions hidden>
+          <button class="load-more-btn" data-loadmore>Ver mais (12/16)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         ABOUT
+         ========================================================= -->
+    <section class="about fade-in-section" id="sobre">
+      <div class="container">
+        <div class="section-head" aria-label="Seção Sobre Mim">
+          <div class="section-kicker">Essência</div>
+
+          <div class="section-title-wrap">
+            <h2>Sobre Mim</h2>
+          </div>
+
+          <div class="section-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="dot"></span>
+            <span class="line"></span>
+          </div>
+
+          <div class="section-subactions">
+            <span class="section-mini" title="Arquitetura • Movimento • Autoral">
+              <i class="fa-regular fa-circle-dot" aria-hidden="true"></i>
+              Arquitetura • Movimento • Autoral
+            </span>
+
+            <a class="section-toplink" href="#home" title="Voltar ao topo">
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              topo
+            </a>
+          </div>
+        </div>
+
+        <div class="about-content">
+          <div class="about-text">
+            <p>Sou Ale Berta, fotógrafa apaixonada por capturar tanto a sofisticação dos imóveis quanto a beleza espontânea do mundo ao meu redor. Minha trajetória profissional é marcada pela busca constante pela luz, pelo enquadramento perfeito e pela emoção que cada imagem pode transmitir.</p>
+            <p>Na fotografia imobiliária, busco destacar os detalhes arquitetônicos e a atmosfera dos espaços, criando imagens que valorizam cada ambiente. Nos meus registros autorais, exploro a relação entre o urbano e o natural, sempre com um olhar sensível e poético.</p>
+            <p>Cada projeto é único e recebe um tratamento personalizado, desde o planejamento até a entrega final das imagens prontas para uso em websites, redes sociais e materiais de marketing.</p>
+
+            <div class="signature-wrapper">
+              <img src="imagens/assinatura.png" alt="Assinatura Ale Berta" class="signature-image" />
+            </div>
+          </div>
+
+          <div class="about-image">
+            <div class="collage-container">
+              <img src="imagens/foto-perfil.jpg" alt="Ale Berta" class="collage-image" />
+              <img src="imagens/foto-perfil2.jpg" alt="Ale Berta" class="collage-image" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         CONTACT
+         ========================================================= -->
+    <section class="contact fade-in-section" id="contato">
+      <div class="container">
+        <div class="section-head" aria-label="Seção Contato">
+          <div class="section-kicker">Orçamentos</div>
+
+          <div class="section-title-wrap">
+            <h2>Contato</h2>
+          </div>
+
+          <div class="section-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="dot"></span>
+            <span class="line"></span>
+          </div>
+
+          <div class="section-subactions">
+            <span class="section-mini" title="Resposta rápida e direta">
+              <i class="fa-regular fa-message" aria-hidden="true"></i>
+              Resposta rápida e direta
+            </span>
+
+            <a class="section-toplink" href="#home" title="Voltar ao topo">
+              <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
+              topo
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-info">
+          <h3>Vamos Conversar</h3>
+          <p>Estou à disposição para discutir seu projeto e como posso ajudar a transformar seus espaços ou registrar momentos especiais com imagens de alto impacto.</p>
+
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-details">
+              <h4>Localização</h4>
+              <p>São Paulo, SP</p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-phone"></i></div>
+            <div class="contact-details">
+              <h4>WhatsApp</h4>
+              <p>
+                <a
+                  href="https://wa.me/5555992343174?text=Olá!%20Vi%20seu%20portfólio%20e%20gostaria%20de%20fazer%20um%20orçamento."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="email-link"
+                  aria-label="Conversar pelo WhatsApp"
+                >(55) 99234-3174</a>
+              </p>
+            </div>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <div class="contact-details">
+              <h4>E-mail</h4>
+              <p><a class="email-link" id="emailCopyLink">alessandrabertas@gmail.com</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="copy-notification" id="copyNotification">E-mail copiado!</div>
+    </section>
+  </main>
+
+  <!-- =========================================================
+       FOOTER
+       ========================================================= -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <i class="fas fa-camera"></i>
+          Ale Berta Fotografia
+        </div>
+        <p>Imóveis • Eventos • Autoral</p>
+
+        <div class="social-links">
+          <a href="https://www.instagram.com/_aleflanasp?igsh=ODllNDBvdDZocG44" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i class="fab fa-instagram" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <p>&copy; 2026 Ale Berta Fotografia. Todos os direitos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       WHATSAPP FLOATING
+       ========================================================= -->
+  <a
+    href="https://wa.me/5555992343174?text=Olá!%20Vi%20seu%20portfólio%20e%20gostaria%20de%20fazer%20um%20orçamento."
+    class="whatsapp-btn"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Falar no WhatsApp"
+  >
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  </a>
+
+  <!-- =========================================================
+       MODAL
+       ========================================================= -->
+  <div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-label="Visualizador de imagens">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-counter" id="modalCounter"></div>
+        <button class="modal-close" id="modalClose" aria-label="Fechar">&times;</button>
+      </div>
+
+      <div class="modal-image-container" id="modalImageContainer">
+        <img src="" class="modal-image" id="modalImage" alt="Imagem ampliada" />
+
+        <div class="modal-nav" aria-hidden="false">
+          <button class="modal-btn modal-prev" id="modalPrev" aria-label="Anterior">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button class="modal-btn modal-next" id="modalNext" aria-label="Próxima">
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <div class="zoom-slider-container" id="zoomSliderContainer" aria-label="Controle de zoom">
+          <div class="zoom-slider" id="zoomSlider">
+            <div class="zoom-slider-handle" id="zoomHandle" aria-label="Arrastar zoom"></div>
+          </div>
+        </div>
+
+        <div class="zoom-controls">
+          <button class="modal-btn" id="zoomOut" aria-label="Diminuir zoom">
+            <i class="fas fa-search-minus" aria-hidden="true"></i>
+          </button>
+          <button class="modal-btn" id="zoomReset" aria-label="Resetar zoom">
+            <i class="fas fa-compress" aria-hidden="true"></i>
+          </button>
+          <button class="modal-btn" id="zoomIn" aria-label="Aumentar zoom">
+            <i class="fas fa-search-plus" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================
+       01) HELPERS / DATA
+       ========================================================= */
+
+    // Gera array de imagens com extensão por número (jpg padrão, jpeg nos índices informados)
+    function generateImageArray(folder, count, jpegNumbers = []) {
+      const jpegSet = new Set((jpegNumbers || []).map(Number));
+      return Array.from({ length: count }, (_, i) => {
+        const n = i + 1;
+        const ext = jpegSet.has(n) ? 'jpeg' : 'jpg';
+        return `imagens/${folder}/foto${n}.${ext}`;
+      });
+    }
+
+    // ATUALIZADO: Imóveis 25, Olhares 16
+    // Imóveis: foto11, foto21, foto23, foto24, foto25 são .jpeg
+    // Olhares: foto16 é .jpeg
+    const imoveisImages = generateImageArray('imoveis', 25, [11, 21, 23, 24, 25]);
+    const eventosImages  = generateImageArray('eventos', 11); // tudo .jpg
+    const olharesImages  = generateImageArray('olhares', 16, [16]);
+
+    // Mapa por galeria (para modal individual e contagens separadas)
+    const galleryMap = {
+      imoveis: { title: 'Imóveis', images: imoveisImages },
+      eventos: { title: 'Eventos', images: eventosImages },
+      olhares: { title: 'Olhares', images: olharesImages },
+    };
+
+    function clamp(n, a, b) { return Math.min(Math.max(n, a), b); }
+
+    function readCSSMs(varName, fallbackMs) {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      if (!raw) return fallbackMs;
+      // Aceita "3000ms" ou "3s"
+      if (raw.endsWith('ms')) {
+        const v = parseFloat(raw);
+        return Number.isFinite(v) ? v : fallbackMs;
+      }
+      if (raw.endsWith('s')) {
+        const v = parseFloat(raw) * 1000;
+        return Number.isFinite(v) ? v : fallbackMs;
+      }
+      const v = parseFloat(raw);
+      return Number.isFinite(v) ? v : fallbackMs;
+    }
+
+    /* =========================================================
+       02) PRELOADER
+       ========================================================= */
+    (function initPreloader() {
+      const preloader = document.getElementById('preloader');
+      if (!preloader) return;
+
+      const PRELOADER_MS = readCSSMs('--preloader-ms', 3000);
+
+      window.setTimeout(() => {
+        preloader.classList.add('hide');
+        preloader.setAttribute('aria-hidden', 'true');
+      }, PRELOADER_MS);
+    })();
+
+    /* =========================================================
+       03) HEADER: scroll + --header-h + smooth scroll
+       ========================================================= */
+    (function initHeader() {
+      const header = document.getElementById('siteHeader');
+      if (!header) return;
+
+      function setHeaderH() {
+        const h = header.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--header-h', `${Math.ceil(h)}px`);
+      }
+
+      function onScroll() {
+        if (window.scrollY > 100) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+        setHeaderH();
+      }
+
+      document.querySelectorAll('header nav a, header .logo').forEach(a => {
+        a.addEventListener('click', (e) => {
+          const href = a.getAttribute('href');
+          if (!href || !href.startsWith('#')) return;
+
+          const id = href.slice(1);
+          const el = document.getElementById(id);
+          if (!el) return;
+
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+
+      setHeaderH();
+      onScroll();
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', setHeaderH);
+
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(() => setHeaderH());
+        ro.observe(header);
+      }
+    })();
+
+    /* =========================================================
+       04) FADE-IN Observer
+       ========================================================= */
+    (function initFadeInObserver() {
+      const sections = document.querySelectorAll('.fade-in-section');
+      if (!sections.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('is-visible');
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -100px 0px" });
+
+      sections.forEach(s => observer.observe(s));
+    })();
+
+    /* =========================================================
+       05) ABOUT: parallax sutil
+       ========================================================= */
+    (function initAboutParallax(){
+      const aboutImage = document.querySelector('#sobre .about-image');
+      const container = aboutImage?.querySelector('.collage-container');
+      if (!aboutImage || !container) return;
+
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      function setVars(px, py){
+        container.style.setProperty('--px', `${px}px`);
+        container.style.setProperty('--py', `${py}px`);
+      }
+
+      function onMove(e){
+        const rect = aboutImage.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+
+        const dx = (e.clientX - cx) / rect.width;
+        const dy = (e.clientY - cy) / rect.height;
+
+        const max = 18;
+        setVars(dx * max, dy * max);
+        aboutImage.classList.add('is-parallax');
+      }
+
+      function onLeave(){
+        aboutImage.classList.remove('is-parallax');
+        setVars(0, 0);
+      }
+
+      aboutImage.addEventListener('mousemove', onMove);
+      aboutImage.addEventListener('mouseleave', onLeave);
+      aboutImage.addEventListener('touchstart', onLeave, { passive: true });
+    })();
+
+    /* =========================================================
+       06) MODAL (zoom + navegação) — INDIVIDUAL POR GALERIA
+       ========================================================= */
+    (function initModal(){
+      const modal = document.getElementById('modal');
+      const modalImage = document.getElementById('modalImage');
+      const modalCounter = document.getElementById('modalCounter');
+      const modalClose = document.getElementById('modalClose');
+      const modalNext = document.getElementById('modalNext');
+      const modalPrev = document.getElementById('modalPrev');
+      const modalImageContainer = document.getElementById('modalImageContainer');
+
+      const zoomSliderContainer = document.getElementById('zoomSliderContainer');
+      const zoomSlider = document.getElementById('zoomSlider');
+      const zoomHandle = document.getElementById('zoomHandle');
+      const zoomInBtn = document.getElementById('zoomIn');
+      const zoomOutBtn = document.getElementById('zoomOut');
+      const zoomResetBtn = document.getElementById('zoomReset');
+
+      if (!modal || !modalImage || !modalCounter || !modalClose || !modalNext || !modalPrev || !modalImageContainer) return;
+
+      let isModalOpen = false;
+
+      // Estado do modal por galeria
+      let currentGalleryKey = 'imoveis';
+      let currentGalleryTitle = 'Imóveis';
+      let currentGalleryImages = imoveisImages;
+      let currentIndex = 0;
+
+      let zoom = 1;
+      let isDragging = false;
+
+      const minZoom = 0.5;
+      const maxZoom = 3;
+
+      function setZoom(newZoom) {
+        zoom = clamp(newZoom, minZoom, maxZoom);
+        modalImage.style.transform = `scale(${zoom})`;
+        updateSliderUI();
+      }
+
+      function updateSliderUI() {
+        if (!zoomSliderContainer || !zoomSlider || !zoomHandle) return;
+        const pct = (zoom - minZoom) / (maxZoom - minZoom);
+        zoomSlider.style.width = `calc(${pct * 100}% + 16px)`;
+      }
+
+      function syncModalCounter(){
+        const total = currentGalleryImages.length;
+        modalCounter.textContent = `${currentGalleryTitle} — foto ${currentIndex + 1} / ${total}`;
+      }
+
+      function openModalAtIndex(galleryKey, idx) {
+        const g = galleryMap[galleryKey];
+        if (!g || !Array.isArray(g.images) || !g.images.length) return;
+
+        currentGalleryKey = galleryKey;
+        currentGalleryTitle = g.title;
+        currentGalleryImages = g.images;
+
+        const total = currentGalleryImages.length;
+        currentIndex = ((idx % total) + total) % total;
+
+        const src = currentGalleryImages[currentIndex];
+
+        isModalOpen = true;
+        modal.hidden = false;
+        modalImage.src = src;
+
+        syncModalCounter();
+        setZoom(1);
+        document.body.style.overflow = 'hidden';
+
+        modalClose.focus({ preventScroll: true });
+      }
+
+      function closeModal() {
+        isModalOpen = false;
+        modal.hidden = true;
+        document.body.style.overflow = '';
+      }
+
+      function nextImage() { openModalAtIndex(currentGalleryKey, currentIndex + 1); }
+      function prevImage() { openModalAtIndex(currentGalleryKey, currentIndex - 1); }
+
+      // API para abrir por índice (recomendado)
+      window.openModal = function(galleryKey, idx){
+        openModalAtIndex(galleryKey, idx);
+      };
+
+      // API para abrir por src (caso precise)
+      window.openModalBySrc = function(galleryKey, src){
+        const g = galleryMap[galleryKey];
+        if (!g) return;
+        const idx = g.images.indexOf(src);
+        openModalAtIndex(galleryKey, idx >= 0 ? idx : 0);
+      };
+
+      modalClose.addEventListener('click', closeModal);
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      modalNext.addEventListener('click', (e) => { e.stopPropagation(); nextImage(); });
+      modalPrev.addEventListener('click', (e) => { e.stopPropagation(); prevImage(); });
+
+      window.addEventListener('keydown', (e) => {
+        if (!isModalOpen) return;
+
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+        if (e.key === '+' || e.key === '=') setZoom(zoom + 0.25);
+        if (e.key === '-' || e.key === '_') setZoom(zoom - 0.25);
+        if (e.key === '0') setZoom(1);
+      });
+
+      modalImageContainer.addEventListener('wheel', (e) => {
+        if (!isModalOpen) return;
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        setZoom(zoom + delta);
+      }, { passive: false });
+
+      if (zoomSliderContainer) {
+        zoomSliderContainer.addEventListener('click', (e) => {
+          const rect = zoomSliderContainer.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const pct = clamp(clickX / rect.width, 0, 1);
+          setZoom(minZoom + (maxZoom - minZoom) * pct);
+        });
+      }
+
+      function onDragMove(e) {
+        if (!isDragging || !zoomSliderContainer) return;
+        const rect = zoomSliderContainer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const pct = clamp(x / rect.width, 0, 1);
+        setZoom(minZoom + (maxZoom - minZoom) * pct);
+      }
+
+      function stopDrag() { isDragging = false; }
+
+      if (zoomHandle) {
+        zoomHandle.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          isDragging = true;
+        });
+      }
+
+      window.addEventListener('mousemove', onDragMove);
+      window.addEventListener('mouseup', stopDrag);
+      window.addEventListener('mouseleave', stopDrag);
+
+      if (zoomOutBtn) zoomOutBtn.addEventListener('click', (e) => { e.stopPropagation(); setZoom(zoom - 0.25); });
+      if (zoomInBtn) zoomInBtn.addEventListener('click', (e) => { e.stopPropagation(); setZoom(zoom + 0.25); });
+      if (zoomResetBtn) zoomResetBtn.addEventListener('click', (e) => { e.stopPropagation(); setZoom(1); });
+    })();
+
+    /* =========================================================
+       07) PORTFOLIOS (render + ver mais) — CONTAGEM INDIVIDUAL
+       ========================================================= */
+    (function initPortfolios() {
+      const INITIAL_LIMIT = 12;
+      const STEP = 12;
+
+      function renderGallery(section, galleryKey, images) {
+        const grid = section.querySelector('[data-grid]');
+        const actions = section.querySelector('[data-actions]');
+        const btn = section.querySelector('[data-loadmore]');
+        const counter = section.querySelector('.gallery-counter');
+
+        if (!grid) return;
+
+        let visibleCount = Math.min(INITIAL_LIMIT, images.length);
+
+        function updateCounter() {
+          if (counter) counter.textContent = `${visibleCount}/${images.length}`;
+          if (btn) btn.textContent = `Ver mais (${visibleCount}/${images.length})`;
+        }
+
+        function paint() {
+          grid.innerHTML = '';
+          const shown = images.slice(0, visibleCount);
+
+          shown.forEach((src, idx) => {
+            const realIndex = images.indexOf(src);
+
+            const item = document.createElement('div');
+            item.className = 'portfolio-item';
+            item.setAttribute('role', 'button');
+            item.setAttribute('tabindex', '0');
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = `${section.dataset.title} ${realIndex + 1}`;
+            img.loading = 'lazy';
+            img.decoding = 'async';
+
+            item.appendChild(img);
+
+            item.addEventListener('click', () => window.openModal?.(galleryKey, realIndex));
+            item.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.openModal?.(galleryKey, realIndex);
+              }
+            });
+
+            grid.appendChild(item);
+          });
+
+          const hasMore = visibleCount < images.length;
+          if (actions) actions.hidden = !hasMore;
+
+          updateCounter();
+        }
+
+        if (btn) {
+          btn.addEventListener('click', () => {
+            visibleCount = Math.min(visibleCount + STEP, images.length);
+            paint();
+          });
+        }
+
+        paint();
+      }
+
+      document.querySelectorAll('section.portfolio[data-gallery]').forEach(section => {
+        const key = section.dataset.gallery;
+        const g = galleryMap[key];
+        if (!g) return;
+        renderGallery(section, key, g.images);
+      });
+    })();
+
+    /* =========================================================
+       08) COPY EMAIL
+       ========================================================= */
+    (function initCopyEmail() {
+      const link = document.getElementById('emailCopyLink');
+      const notif = document.getElementById('copyNotification');
+      if (!link || !notif) return;
+
+      link.addEventListener('click', async () => {
+        const email = "alessandrabertas@gmail.com";
+        try {
+          await navigator.clipboard.writeText(email);
+          notif.classList.add('show');
+          window.setTimeout(() => notif.classList.remove('show'), 2000);
+        } catch (err) {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.left = '-9999px';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+
+          notif.classList.add('show');
+          window.setTimeout(() => notif.classList.remove('show'), 2000);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
